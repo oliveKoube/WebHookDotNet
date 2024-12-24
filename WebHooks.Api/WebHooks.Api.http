@@ -19,3 +19,6 @@ Content-Type: application/json
     "webHookUrl": "https://webhook.site/ae7f7b33-75da-46b9-8f02-ee93df194499"
 }
 ###
+
+GET {{WebHooks}}/orders
+Content-Type: application/json

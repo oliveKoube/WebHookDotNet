@@ -1,3 +1,4 @@
+using Scalar.AspNetCore;
 using WebHooks.Api.Models;
 using WebHooks.Api.Repository;
 using WebHooks.Api.Services;
@@ -21,9 +22,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI(options =>
+    app.MapScalarApiReference(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "OpenApi v1");
+        options
+            .WithTitle("WebHooks API")
+            .WithTheme(ScalarTheme.Mars)
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
     });
 }
 
@@ -54,6 +58,6 @@ app.MapPost("/orders", async (CreateOrderRequest request, InMemoryOrderRepositor
     .WithTags("Orders");
 
 app.MapGet("/orders", (InMemoryOrderRepository orderRepository) =>
-    Results.Ok((object?)orderRepository.GetAll())).WithTags("Orders");
+    Results.Ok(orderRepository.GetAll())).WithTags("Orders");
 
 app.Run();
