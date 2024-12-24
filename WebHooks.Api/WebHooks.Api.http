@@ -1,0 +1,21 @@
+@WebHooks.Api_HostAddress = http://localhost:5145
+
+###
+
+POST {{WebHooks}}/orders
+Content-Type: application/json
+
+{
+    "customerName": "test",
+    "amount": 100
+}
+###
+
+POST {{WebHooks}}/webhooks/subscriptions
+Content-Type: application/json
+
+{
+    "EventType": "OrderCreated",
+    "webHookUrl": "https://webhook.site/ae7f7b33-75da-46b9-8f02-ee93df194499"
+}
+###

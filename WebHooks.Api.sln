@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHooks.Api", "WebHooks.Api\WebHooks.Api.csproj", "{CCA95A81-322E-4A72-9563-974B0B824AFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CCA95A81-322E-4A72-9563-974B0B824AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA95A81-322E-4A72-9563-974B0B824AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA95A81-322E-4A72-9563-974B0B824AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA95A81-322E-4A72-9563-974B0B824AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
