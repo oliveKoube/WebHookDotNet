@@ -1,22 +1,25 @@
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Webhooks.Api.Data;
+using WebHooks.Api.Extensions;
 using WebHooks.Api.Models;
-using WebHooks.Api.Repository;
 using WebHooks.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<InMemoryOrderRepository>();
-builder.Services.AddSingleton<InMemoryWebHookSubscriptionRepository>();
+builder.Services.AddTransient<WebhookDispatcher>();
 
-builder.Services.AddHttpClient<WebHookDispatcher>();
+builder.Services.AddDbContext<WebhooksDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("webhooks")));
 
 
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -29,27 +32,34 @@ if (app.Environment.IsDevelopment())
             .WithTheme(ScalarTheme.Mars)
             .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
     });
+
+    await app.ApplyMigration();
 }
 
 app.UseHttpsRedirection();
 
-app.MapPost("/webhooks/subscriptions", (CreateWebHookSubscriptionRequest request,
-    InMemoryWebHookSubscriptionRepository webHookSubscriptionRepository) =>
+app.MapPost("/webhooks/subscriptions", async (CreateWebhookSubscriptionRequest request,
+    WebhooksDbContext dbContext) =>
 {
-    WebHookSubscription webHookSubscription = new WebHookSubscription(Guid.NewGuid(),
+    WebhookSubscription webHookSubscription = new WebhookSubscription(Guid.NewGuid(),
         request.EventType,
         request.WebHookUrl,
         DateTime.UtcNow);
-    webHookSubscriptionRepository.Add(webHookSubscription);
+    dbContext.WebhookSubscriptions.Add(webHookSubscription);
+    
+    await dbContext.SaveChangesAsync();
+    
     return Results.Ok(webHookSubscription);
 });
 
-app.MapPost("/orders", async (CreateOrderRequest request, InMemoryOrderRepository orderRepository,
-        WebHookDispatcher webHookDispatcher) =>
+app.MapPost("/orders", async (CreateOrderRequest request, WebhooksDbContext dbContext,
+        WebhookDispatcher webHookDispatcher) =>
     {
         var order = new Order(Guid.NewGuid(), request.CustomerName, request.Amount, DateTime.UtcNow);
 
-        orderRepository.Add(order);
+        dbContext.Orders.Add(order);
+        
+        await dbContext.SaveChangesAsync();
 
         await webHookDispatcher.DispatchAsync("OrderCreated", order);
         return Results.Ok(order);
@@ -57,7 +67,7 @@ app.MapPost("/orders", async (CreateOrderRequest request, InMemoryOrderRepositor
     })
     .WithTags("Orders");
 
-app.MapGet("/orders", (InMemoryOrderRepository orderRepository) =>
-    Results.Ok(orderRepository.GetAll())).WithTags("Orders");
+app.MapGet("/orders", async (WebhooksDbContext dbContext) =>
+    Results.Ok(await dbContext.Orders.ToListAsync())).WithTags("Orders");
 
 app.Run();
