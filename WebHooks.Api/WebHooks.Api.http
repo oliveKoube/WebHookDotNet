@@ -1,4 +1,4 @@
-@WebHooks = http://localhost:5145
+@WebHooks = https://localhost:7116
 
 ###
 
@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
     "customerName": "test",
-    "amount": 100
+    "amount": 10000
 }
 ###
 
@@ -16,7 +16,7 @@ Content-Type: application/json
 
 {
     "EventType": "OrderCreated",
-    "webHookUrl": "https://webhook.site/ae7f7b33-75da-46b9-8f02-ee93df194499"
+    "webHookUrl": "https://webhook.site/8ceabd7e-359d-47ea-aeba-0d23d7211a05"
 }
 ###
 
