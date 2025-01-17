@@ -16,7 +16,7 @@ internal sealed class WebhookDispatcher(
     public async Task DispatchAsync<T>(string eventType, T data)
         where T : notnull
     {
-        using Activity activity = DiagnosticsConfig.ActivitySource.StartActivity($"{eventType} dispatch webhook");
+        using var activity = DiagnosticsConfig.ActivitySource.StartActivity($"{eventType} dispatch webhook");
         activity?.SetTag("event.Type", eventType);
         await webhooksDispatch.Writer.WriteAsync(new WebhooksDispatch(eventType, data,activity?.Id));
     }
