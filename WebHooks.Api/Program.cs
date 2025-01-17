@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
 
-builder.Services.AddTransient<WebhookDispatcher>();
+builder.Services.AddScoped<WebhookDispatcher>();
 
 builder.Services.AddDbContext<WebhooksDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("webhooks")));
@@ -46,9 +46,9 @@ app.MapPost("/webhooks/subscriptions", async (CreateWebhookSubscriptionRequest r
         request.WebHookUrl,
         DateTime.UtcNow);
     dbContext.WebhookSubscriptions.Add(webHookSubscription);
-    
+
     await dbContext.SaveChangesAsync();
-    
+
     return Results.Ok(webHookSubscription);
 });
 
@@ -58,7 +58,7 @@ app.MapPost("/orders", async (CreateOrderRequest request, WebhooksDbContext dbCo
         var order = new Order(Guid.NewGuid(), request.CustomerName, request.Amount, DateTime.UtcNow);
 
         dbContext.Orders.Add(order);
-        
+
         await dbContext.SaveChangesAsync();
 
         await webHookDispatcher.DispatchAsync("OrderCreated", order);

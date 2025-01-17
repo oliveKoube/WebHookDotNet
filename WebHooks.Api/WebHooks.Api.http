@@ -1,4 +1,4 @@
-@WebHooks.Api_HostAddress = http://localhost:5145
+@WebHooks = http://localhost:5145
 
 ###
 
