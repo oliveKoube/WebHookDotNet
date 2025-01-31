@@ -1,5 +1,7 @@
-using System.Threading.Channels;
+using MassTransit;
+using MassTransit.Logging;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Scalar.AspNetCore;
 using Webhooks.Api.Data;
 using WebHooks.Api.Diagnostics;
@@ -17,14 +19,33 @@ builder.Services.AddScoped<WebhookDispatcher>();
 builder.Services.AddDbContext<WebhooksDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("webhooks")));
 
-builder.Services.AddHostedService<WebhooksProcessor>();
-builder.Services.AddSingleton(_ => Channel.CreateBounded<WebhooksDispatch>(new BoundedChannelOptions(100)
+// builder.Services.AddHostedService<WebhooksProcessor>();
+// builder.Services.AddSingleton(_ => Channel.CreateBounded<WebhooksDispatch>(new BoundedChannelOptions(100)
+// {
+//     FullMode = BoundedChannelFullMode.Wait
+// }));
+
+builder.Services.AddMassTransit(cfg =>
 {
-    FullMode = BoundedChannelFullMode.Wait
-}));
+    cfg.AddConsumer<WebhookTriggeredConsumer>();
+    cfg.AddConsumer<WebhookDispatchedConsumer>();
+
+    cfg.SetKebabCaseEndpointNameFormatter();
+    cfg.UsingRabbitMq((context, config) =>
+    {
+        config.Host(builder.Configuration.GetConnectionString("rabbitmq"));
+        config.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddOpenTelemetry()
-    .WithTracing(tracing => tracing.AddSource(DiagnosticsConfig.ActivitySource.Name));
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddSource(DiagnosticsConfig.ActivitySource.Name)
+            .AddNpgsql()
+            .AddSource(DiagnosticHeaders.DefaultListenerName);
+    });
 
 var app = builder.Build();
 
@@ -50,7 +71,7 @@ app.UseHttpsRedirection();
 app.MapPost("/webhooks/subscriptions", async (CreateWebhookSubscriptionRequest request,
     WebhooksDbContext dbContext) =>
 {
-    WebhookSubscription webHookSubscription = new WebhookSubscription(Guid.NewGuid(),
+    var webHookSubscription = new WebhookSubscription(Guid.NewGuid(),
         request.EventType,
         request.WebHookUrl,
         DateTime.UtcNow);
@@ -72,11 +93,11 @@ app.MapPost("/orders", async (CreateOrderRequest request, WebhooksDbContext dbCo
 
         await webHookDispatcher.DispatchAsync("OrderCreated", order);
         return Results.Ok(order);
-
     })
     .WithTags("Orders");
 
 app.MapGet("/orders", async (WebhooksDbContext dbContext) =>
-    Results.Ok(await dbContext.Orders.ToListAsync())).WithTags("Orders");
+        Results.Ok(await dbContext.Orders.ToListAsync()))
+    .WithTags("Orders");
 
 app.Run();

@@ -6,18 +6,20 @@ POST {{WebHooks}}/orders
 Content-Type: application/json
 
 {
-    "customerName": "test",
-    "amount": 10000
+  "customerName": "test",
+  "amount": 10000
 }
+
 ###
 
 POST {{WebHooks}}/webhooks/subscriptions
 Content-Type: application/json
 
 {
-    "EventType": "OrderCreated",
-    "webHookUrl": "https://webhook.site/8ceabd7e-359d-47ea-aeba-0d23d7211a05"
+  "EventType": "OrderCreated",
+  "webHookUrl": "https://webhook.site/9753c36c-f572-48a3-b6bc-0fa21a5ab1ee"
 }
+
 ###
 
 GET {{WebHooks}}/orders

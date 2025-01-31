@@ -7,17 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.5"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
-        <PackageReference Include="Scalar.AspNetCore" Version="1.2.71" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2"/>
+        <PackageReference Include="Npgsql.OpenTelemetry" Version="9.0.2"/>
+        <PackageReference Include="Scalar.AspNetCore" Version="1.2.71"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\aspire\WebHooks.ServiceDefaults\WebHooks.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\aspire\WebHooks.ServiceDefaults\WebHooks.ServiceDefaults.csproj"/>
     </ItemGroup>
 
 </Project>

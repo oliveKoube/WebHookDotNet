@@ -1,3 +1,5 @@
+using Projects;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var database = builder.AddPostgres("postgres")
@@ -5,8 +7,15 @@ var database = builder.AddPostgres("postgres")
     .WithPgAdmin()
     .AddDatabase("webhooks");
 
-builder.AddProject<Projects.WebHooks_Api>("webhooks-api")
-    .WithReference(database)
-    .WaitFor(database);
+var rabbitMq = builder.AddRabbitMQ("rabbitmq")
+    .WithDataVolume()
+    .WithManagementPlugin();
 
-builder.Build().Run();
+builder.AddProject<WebHooks_Api>("webhooks-api")
+    .WithReference(database)
+    .WithReference(rabbitMq)
+    .WaitFor(database)
+    .WaitFor(rabbitMq);
+
+builder.Build()
+    .Run();

@@ -8,7 +8,7 @@ public static class WebApplicationExtensions
     public static async Task ApplyMigration(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<WebhooksDbContext>(); 
+        var dbContext = scope.ServiceProvider.GetRequiredService<WebhooksDbContext>();
         await dbContext.Database.MigrateAsync();
     }
 }

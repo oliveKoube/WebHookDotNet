@@ -13,11 +13,12 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0"/>
-        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.0.0" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.0.0"/>
+        <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="9.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\WebHooks.Api\WebHooks.Api.csproj" />
+        <ProjectReference Include="..\..\WebHooks.Api\WebHooks.Api.csproj"/>
     </ItemGroup>
 
 </Project>
