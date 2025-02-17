@@ -1,9 +1,10 @@
 using System.Text.Json;
 using MassTransit;
-using Webhooks.Api.Data;
-using WebHooks.Api.Models;
+using WebHooks.Shared.Contracts;
+using WebHooks.Shared.Data;
+using WebHooks.Shared.Models;
 
-namespace WebHooks.Api.Services;
+namespace WebHooks.Processing.Services;
 
 internal sealed class WebhookTriggeredConsumer(WebhooksDbContext dbContext, IHttpClientFactory httpClientFactory)
     : IConsumer<WebhookTriggered>

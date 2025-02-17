@@ -17,5 +17,12 @@ builder.AddProject<WebHooks_Api>("webhooks-api")
     .WaitFor(database)
     .WaitFor(rabbitMq);
 
+builder.AddProject<WebHooks_Processing>("webhooks-processing")
+    .WithReplicas(3)
+    .WithReference(database)
+    .WithReference(rabbitMq)
+    .WaitFor(database)
+    .WaitFor(rabbitMq);
+
 builder.Build()
     .Run();

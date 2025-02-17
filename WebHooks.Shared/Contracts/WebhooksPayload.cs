@@ -1,4 +1,4 @@
-namespace WebHooks.Api.Services;
+namespace WebHooks.Shared.Contracts;
 
 public class WebhooksPayload
 {

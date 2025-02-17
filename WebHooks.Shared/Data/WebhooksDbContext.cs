@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using WebHooks.Api.Models;
+using WebHooks.Shared.Models;
 
-namespace WebHooks.Api.Data;
+namespace WebHooks.Shared.Data;
 
-internal sealed class WebhooksDbContext(DbContextOptions<WebhooksDbContext> options) : DbContext(options)
+public sealed class WebhooksDbContext(DbContextOptions<WebhooksDbContext> options) : DbContext(options)
 {
     public DbSet<Order> Orders => Set<Order>();
 

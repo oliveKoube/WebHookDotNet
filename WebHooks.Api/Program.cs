@@ -3,7 +3,7 @@ using MassTransit.Logging;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Scalar.AspNetCore;
-using Webhooks.Api.Data;
+using WebHooks.Api.Data;
 using WebHooks.Api.Diagnostics;
 using WebHooks.Api.Extensions;
 using WebHooks.Api.Models;
@@ -27,9 +27,6 @@ builder.Services.AddDbContext<WebhooksDbContext>(options =>
 
 builder.Services.AddMassTransit(cfg =>
 {
-    cfg.AddConsumer<WebhookTriggeredConsumer>();
-    cfg.AddConsumer<WebhookDispatchedConsumer>();
-
     cfg.SetKebabCaseEndpointNameFormatter();
     cfg.UsingRabbitMq((context, config) =>
     {

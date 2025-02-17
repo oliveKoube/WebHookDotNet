@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
   "EventType": "OrderCreated",
-  "webHookUrl": "https://webhook.site/9753c36c-f572-48a3-b6bc-0fa21a5ab1ee"
+  "webHookUrl": "https://webhook.site/9c157c99-186f-4946-a1de-5b87ac3de47e  ",
 }
 
 ###

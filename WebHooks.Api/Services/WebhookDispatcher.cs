@@ -1,5 +1,6 @@
 using MassTransit;
 using WebHooks.Api.Diagnostics;
+using WebHooks.Shared.Contracts;
 
 namespace WebHooks.Api.Services;
 
